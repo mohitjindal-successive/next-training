@@ -1,42 +1,51 @@
 import { useRouter } from 'next/router';
+import useSWR from 'swr'
 
-export default function BlogData() {
+const fetcher = (...args) => fetch(...args).then((res) => {
+  return res.json()
+} 
+)
+export default function BlogDetails() {
     const router = useRouter();
+
   const {blogId} = router.query;
+  const { data, error, isLoading } = useSWR(`/api/blogs/${blogId}`, fetcher)
+  // console.log('data -- ', data)
+
+  if (error) {
+    return (
+      <div>
+        Error fetching blog list
+      </div>
+    )
+  }
+  else if (isLoading) {
+    return (
+      <div>
+        Loading
+      </div>
+    )
+  }
+
     return (
         <>
-                    <h1 >Blogs Details {blogId}</h1>
-                    {/* {data?.map((blog) => (
-                <div  key={blog.blogId}> */}
-                  {/* {blog.title} */}
-                {/* </div> */}
-              {/* ))} */}
+                    <h1 >Blogs Details</h1>
+                    {data?.map((blog) => (
+                 <div  key={blog.blogId}> 
+                 
+                  Title: {blog.title}
+                  <br/>
+                  Description: {blog.description}
+                  <br/>
+                  Comments: 
+                  {blog?.comments?.map((comment, id) => 
+                    <div key={id}>
+                      From: {comment.by} <br/>
+                      Comment: {comment.comment}
+                      </div>
+                  )}
+                </div>
+              ))}
         </>
     )
 }
-
-// export async function getStaticProps() {
-// //   const response = await axios.get(`${baseUrl}/blog-post`);
-//   const response = {
-//     status: 200,
-//     data: [
-//         {
-//             blogId: 1,
-//         title: 'blog 1',
-//         description: 'blog 1 description'
-//       },
-//       {blogId: 2,
-//         title: 'blog 2',
-//         description: 'blog 2 description'
-//       },
-      
-//     ]
-//   }
-
-//   const data = response?.data;
-//   return {
-//         props: { data }, // will be passed to the page component as props
-//         // revalidate: 10,
-//       };
-// }
-

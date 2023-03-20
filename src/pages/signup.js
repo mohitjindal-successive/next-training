@@ -1,7 +1,6 @@
 export default function Signup() {
     return (
         <>
-            <main>
                 <form>
                     <h1 >Sign Up</h1>
                     <div>
@@ -26,7 +25,6 @@ export default function Signup() {
                     </div>
                     <button type="submit">SignUp</button>
                 </form>
-            </main>
         </>
     )
 }
